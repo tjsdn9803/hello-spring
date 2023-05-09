@@ -1,0 +1,37 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="container">
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>index</th>
+                <th>이름</th>
+                <th>email</th>
+                <th>password</th>
+                <th>nickname</th>
+                <th>userAuth</th>
+                <th>appendDate</th>
+                <th>updateDate</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="member : ${members}">
+                <td th:text="${member.id}"></td>
+                <td th:text="${member.index}"></td>
+                <td th:text="${member.name}"></td>
+                <td th:text="${member.email}"></td>
+                <td th:text="${member.password}"></td>
+                <td th:text="${member.nickname}"></td>
+                <td th:text="${member.userAuth}"></td>
+                <td th:text="${member.appendDate}"></td>
+                <td th:text="${member.updateDate}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div> <!-- /container -->
+</body>
+</html>
