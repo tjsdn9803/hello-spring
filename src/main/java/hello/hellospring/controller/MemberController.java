@@ -9,8 +9,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+enum userAuth{
+    ACTIVE("ACTIVE"), INACTIVE("INACTIVE");
+    final private String auth;
 
+    userAuth(String auth) {
+        this.auth = auth;
+    }
+}
 @Controller
 public class MemberController {
 
@@ -33,9 +42,12 @@ public class MemberController {
         member.setNickname(form.getNickname());
         member.setPassword(form.getPassword());
         member.setEmail(form.getEmail());
-        member.setUserAuth("active");
-        member.setAppendDate("2023_05_09");
-        member.setUpdateDate("2023_05_09");//미구형
+        member.setUserAuth(String.valueOf(userAuth.ACTIVE));
+        LocalDate now = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        String formatedNow = now.format(formatter);
+        member.setAppendDate(formatedNow);
+        member.setUpdateDate(formatedNow);//미구현
         System.out.println("controller--member.getIndex() = " + member.getIndex());
         memberService.join(member);
         return "redirect:/";
