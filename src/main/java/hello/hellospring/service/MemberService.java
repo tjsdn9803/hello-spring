@@ -31,7 +31,7 @@ public class MemberService {
     private void ValidateDuplicateMemberByNickname(Member member) {//email 중복
         memberRepository.findByNickname(member.getNickname())
             .ifPresent(m -> {
-                throw new IllegalStateException("이미 존재하는 닉네임입니다.");
+                throw new IllegalStateException("이미 존재하는 회원의 닉네임입니다.");
             });
     }
 
