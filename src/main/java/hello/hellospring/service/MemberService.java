@@ -3,13 +3,21 @@ package hello.hellospring.service;
 import hello.hellospring.controller.MemberForm;
 import hello.hellospring.domain.Member;
 import hello.hellospring.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+enum userAuth{
+    ACTIVE("ACTIVE"), INACTIVE("INACTIVE");
+    final private String auth;
 
+    userAuth(String auth) {
+        this.auth = auth;
+    }
+}
 @Transactional
 public class MemberService {
 
@@ -19,11 +27,21 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 //    회원가입
-    public Long join(Member member){
+    public Long join(MemberForm memberForm){
         //email, nickname 중복 x
+        Member member = new Member();
+        member.setName(memberForm.getName());
+        member.setNickname(memberForm.getNickname());
+        member.setPassword(memberForm.getPassword());
+        member.setEmail(memberForm.getEmail());
+        member.setUserAuth(String.valueOf(userAuth.ACTIVE));
+        LocalDate now = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        String formatedNow = now.format(formatter);
+        member.setAppendDate(formatedNow);
+        member.setUpdateDate(formatedNow);//미구현
         ValidateDuplicateMemberByEmail(member);
         ValidateDuplicateMemberByNickname(member);
-        System.out.println("service----member.getIndex() = " + member.getIndex());
         memberRepository.save(member);
         return member.getId();
     }
@@ -50,21 +68,20 @@ public class MemberService {
         return memberRepository.findById(memberId);
     }
 
-    public MemberForm login(MemberForm memberForm){
+    public Boolean login(MemberForm memberForm){
         Optional<Member> optionalMember = memberRepository.findByEmail(memberForm.getEmail());
         if(optionalMember.isPresent()){
             Member member = optionalMember.get();
             if(member.getPassword().equals(memberForm.getPassword())){
-                MemberForm form = MemberForm.toMemberForm(member);
                 System.out.println("login success!!");
-                return form;
+                return true;
             }else{
                 System.out.println("password is not correct!!");
-                return null;
+                return false;
             }
         }else{
             System.out.println("email not exist");
-            return null;
+            return false;
         }
     }
 }

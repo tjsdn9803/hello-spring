@@ -12,14 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-enum userAuth{
-    ACTIVE("ACTIVE"), INACTIVE("INACTIVE");
-    final private String auth;
 
-    userAuth(String auth) {
-        this.auth = auth;
-    }
-}
 @Controller
 public class MemberController {
 
@@ -37,20 +30,8 @@ public class MemberController {
 
     @PostMapping("/members/new")
     public String create(MemberForm form) {
-        Member member = new Member();
-        member.setName(form.getName());
-        member.setNickname(form.getNickname());
-        member.setPassword(form.getPassword());
-        member.setEmail(form.getEmail());
-        member.setUserAuth(String.valueOf(userAuth.ACTIVE));
-        LocalDate now = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        String formatedNow = now.format(formatter);
-        member.setAppendDate(formatedNow);
-        member.setUpdateDate(formatedNow);//미구현
-        System.out.println("controller--member.getIndex() = " + member.getIndex());
-        memberService.join(member);
-        return "redirect:/";
+        memberService.join(form);
+        return "home";
     }
 
     @GetMapping("/members")
@@ -67,10 +48,9 @@ public class MemberController {
 
     @PostMapping("/members/login")
     public String login(MemberForm form, HttpSession session) {
-        MemberForm loginResult = memberService.login(form);
-        if(loginResult != null){
-            session.setAttribute("loginEmail", loginResult.getEmail());
-            return "redirect:/";
+        if(memberService.login(form)){
+            session.setAttribute("loginEmail", form.getEmail());
+            return "home";
         }else{
             return "members/loginMemberForm";
         }
