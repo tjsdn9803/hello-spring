@@ -3,6 +3,7 @@ package hello.hellospring.service;
 import hello.hellospring.controller.MemberForm;
 import hello.hellospring.domain.Member;
 import hello.hellospring.repository.MemberRepository;
+import hello.hellospring.security.SecurityService;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
@@ -22,9 +23,11 @@ enum userAuth{
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final SecurityService securityService;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, SecurityService securityService) {
         this.memberRepository = memberRepository;
+        this.securityService = securityService;
     }
 //    회원가입
     public Long join(MemberForm memberForm){
@@ -68,20 +71,30 @@ public class MemberService {
         return memberRepository.findById(memberId);
     }
 
-    public Boolean login(MemberForm memberForm){
+    public MemberForm login(MemberForm memberForm){
+        NoMemberByEmail(memberForm);
+        NoMemberByPassword(memberForm);
+        String token = securityService.createToken(memberForm.getEmail(), 2*1000*60);
+        memberForm.setJwt(token);
+        return memberForm;
+    }
+
+    private void NoMemberByEmail(MemberForm memberForm){
+        if(memberRepository.findByEmail(memberForm.getEmail())
+                .isEmpty()){
+            throw new IllegalStateException("이메일이 존재 하지 않습니다.");
+        }
+    }
+
+    private void NoMemberByPassword(MemberForm memberForm){
         Optional<Member> optionalMember = memberRepository.findByEmail(memberForm.getEmail());
         if(optionalMember.isPresent()){
             Member member = optionalMember.get();
-            if(member.getPassword().equals(memberForm.getPassword())){
-                System.out.println("login success!!");
-                return true;
-            }else{
-                System.out.println("password is not correct!!");
-                return false;
+            if(!member.getPassword().equals(memberForm.getPassword())){
+                throw new IllegalStateException("비밀번호가 틀립니다.");
             }
-        }else{
-            System.out.println("email not exist");
-            return false;
         }
+
+
     }
 }

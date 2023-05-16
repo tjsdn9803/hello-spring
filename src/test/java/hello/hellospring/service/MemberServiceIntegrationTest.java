@@ -117,4 +117,22 @@ public class MemberServiceIntegrationTest {
         //Then
         assertThat(b).isEqualTo(false);
     }
+
+    @Test
+    public void login() throws Exception{
+        //Given
+        MemberForm memberForm = new MemberForm();
+        memberForm.setName("testName");
+        memberForm.setEmail("testEmail@naver.com");
+        memberForm.setPassword("testPassword");
+        memberForm.setNickname("testNickname");
+        Long saveId = memberService.join(memberForm);
+        MemberForm loginMemberForm = new MemberForm();
+        loginMemberForm.setEmail("testEmail@naver.com");
+        loginMemberForm.setPassword("testPassword");
+        //When
+        Boolean b = memberService.login(loginMemberForm);
+        //Then
+        assertThat(b).isEqualTo(true);
+    }
 }

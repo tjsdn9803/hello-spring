@@ -1,6 +1,7 @@
 package hello.hellospring.controller;
 
 import hello.hellospring.domain.Member;
+import hello.hellospring.security.SecurityService;
 import hello.hellospring.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,11 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Controller
 public class MemberController {
-
     private final MemberService memberService;
 
     @Autowired
@@ -47,9 +50,10 @@ public class MemberController {
     }
 
     @PostMapping("/members/login")
-    public String login(MemberForm form, HttpSession session) {
-        if(memberService.login(form)){
-            session.setAttribute("loginEmail", form.getEmail());
+    public String login(MemberForm form, Model model) {
+        MemberForm memberForm = memberService.login(form);
+        if(!memberForm.getJwt().isEmpty()){
+            model.addAttribute("memberform", memberForm.getJwt());
             return "home";
         }else{
             return "members/loginMemberForm";

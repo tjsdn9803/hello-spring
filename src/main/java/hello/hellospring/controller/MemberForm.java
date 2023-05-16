@@ -7,6 +7,7 @@ public class MemberForm {
     private String name;
     private String password;
     private String nickname;
+    private String jwt;
 
     public static MemberForm toMemberForm(Member member) {
         MemberForm memberForm = new MemberForm();
@@ -48,4 +49,11 @@ public class MemberForm {
         this.nickname = nickname;
     }
 
+    public String getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
+    }
 }
