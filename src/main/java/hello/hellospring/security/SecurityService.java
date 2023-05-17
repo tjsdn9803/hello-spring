@@ -38,6 +38,7 @@ public class SecurityService {
                 .setExpiration(new Date(System.currentTimeMillis() * expTime))
                 .compact();
     }
+
     public Boolean getAuth(String token){
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))

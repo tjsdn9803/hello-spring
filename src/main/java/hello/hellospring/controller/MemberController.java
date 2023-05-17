@@ -53,7 +53,7 @@ public class MemberController {
     public String login(MemberForm form, Model model) {
         MemberForm memberForm = memberService.login(form);
         if(!memberForm.getJwt().isEmpty()){
-            model.addAttribute("memberform", memberForm.getJwt());
+            model.addAttribute("memberform", memberForm);
             return "home";
         }else{
             return "members/loginMemberForm";

@@ -94,7 +94,5 @@ public class MemberService {
                 throw new IllegalStateException("비밀번호가 틀립니다.");
             }
         }
-
-
     }
 }
