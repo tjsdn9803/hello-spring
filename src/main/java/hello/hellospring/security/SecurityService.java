@@ -48,4 +48,12 @@ public class SecurityService {
         Optional<Member> optionalMember = memberRepository.findByEmail(claims.getSubject());
         return optionalMember.isPresent();
     }
+
+    public Claims getClaims(String token){
+        return Jwts.parserBuilder()
+                .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 }
