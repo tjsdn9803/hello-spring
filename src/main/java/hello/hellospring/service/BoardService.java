@@ -5,6 +5,8 @@ import hello.hellospring.domain.BoardEntity;
 import hello.hellospring.repository.BoardRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BoardService {
     private final BoardRepository boardRepository;
@@ -16,5 +18,9 @@ public class BoardService {
     public void save(BoardDto boardDto) {
         BoardEntity boardEntity = BoardEntity.toSaveEntity(boardDto);
         boardRepository.save(boardEntity);
+    }
+
+    public List<BoardEntity> findBoards(){
+        return boardRepository.findAll();
     }
 }

@@ -91,6 +91,7 @@ public class BoardEntity {
         boardEntity.setBoardPass(boardDto.getBoardPass());
         boardEntity.setBoardTitle(boardDto.getBoardTitle());
         boardEntity.setBoardHits(0);
+        boardEntity.setBoardCreatedTime(LocalDateTime.now());
         return boardEntity;
     }
 }

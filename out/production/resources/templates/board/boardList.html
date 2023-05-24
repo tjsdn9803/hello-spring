@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>boardList</title>
+</head>
+<body>
+<div>
+  <table>
+    <thead>
+    <tr>
+      <th>제목</th>
+      <th>글쓴이</th>
+      <th>조회수</th>
+      <th>시간</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="board : ${boards}">
+      <td th:text="${board.boardTitle}"></td>
+      <td th:text="${board.boardWriter}"></td>
+      <td th:text="${board.boardHits}"></td>
+      <td th:text="${board.boardCreatedTime}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

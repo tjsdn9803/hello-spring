@@ -1,12 +1,16 @@
 package hello.hellospring.controller;
 
 import hello.hellospring.domain.BoardDto;
+import hello.hellospring.domain.BoardEntity;
 import hello.hellospring.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Controller
 public class BoardController {
@@ -24,8 +28,15 @@ public class BoardController {
 
     @PostMapping("/board/save")
     public String write(@ModelAttribute BoardDto boardDto){
-        System.out.println("boardDto = " + boardDto);
         boardService.save(boardDto);
         return "home";
+    }
+
+    @GetMapping("/board/list")
+    public String BoardList(Model model){
+        List<BoardEntity> boards = boardService.findBoards();
+        model.addAttribute("boards", boards);
+        return "board/boardList";
+
     }
 }
