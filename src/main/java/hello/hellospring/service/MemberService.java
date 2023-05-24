@@ -1,6 +1,7 @@
 package hello.hellospring.service;
 
 import hello.hellospring.controller.MemberForm;
+import hello.hellospring.domain.BoardEntity;
 import hello.hellospring.domain.Member;
 import hello.hellospring.repository.MemberRepository;
 import hello.hellospring.security.SecurityService;
@@ -11,6 +12,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 enum userAuth{
     ACTIVE("ACTIVE"), INACTIVE("INACTIVE");
     final private String auth;
@@ -30,6 +34,7 @@ public class MemberService {
         this.securityService = securityService;
     }
 //    회원가입
+    Long index = 0L;
     public Long join(MemberForm memberForm){
         //email, nickname 중복 x
         Member member = new Member();
@@ -38,17 +43,38 @@ public class MemberService {
         member.setPassword(memberForm.getPassword());
         member.setEmail(memberForm.getEmail());
         member.setUserAuth(String.valueOf(userAuth.ACTIVE));
+
         LocalDate now = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         String formatedNow = now.format(formatter);
         member.setAppendDate(formatedNow);
         member.setUpdateDate(formatedNow);//미구현
+
         ValidateDuplicateMemberByEmail(member);
         ValidateDuplicateMemberByNickname(member);
+
+        member.setId(createMemberId());
+        member.setIndex(++index);
         memberRepository.save(member);
         return member.getId();
     }
 
+    public Long createMemberId(){
+        Random random = new Random();
+        random.setSeed(System.currentTimeMillis());
+        Long id = ThreadLocalRandom.current().nextLong(Long.MAX_VALUE);
+        while(true){
+            if(findMemberById(id).isEmpty()){
+                return id;
+            }else{
+                id = random.nextLong();
+            }
+        }
+    }
+
+    public Optional<Member> findMemberById(Long MemberId){
+        return memberRepository.findById(MemberId);
+    }
     private void ValidateDuplicateMemberByNickname(Member member) {//email 중복
         memberRepository.findByNickname(member.getNickname())
             .ifPresent(m -> {
@@ -95,4 +121,6 @@ public class MemberService {
             }
         }
     }
+
+
 }
