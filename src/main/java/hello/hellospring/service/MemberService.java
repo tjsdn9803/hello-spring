@@ -80,6 +80,7 @@ public class MemberService {
     public Optional<Member> findMemberById(Long MemberId){
         return memberRepository.findById(MemberId);
     }
+
     private void ValidateDuplicateMemberByNickname(Member member) {//email 중복
         memberRepository.findByNickname(member.getNickname())
             .ifPresent(m -> {
@@ -118,9 +119,9 @@ public class MemberService {
     }
 
     private void NoMemberByPassword(MemberForm memberForm){
-        Optional<Member> optionalMember = memberRepository.findByEmail(memberForm.getEmail());
+        Optional<Object> optionalMember = memberRepository.findByEmail(memberForm.getEmail());
         if(optionalMember.isPresent()){
-            Member member = optionalMember.get();
+            Member member = (Member) optionalMember.get();
             if(!member.getPassword().equals(memberForm.getPassword())){
                 throw new IllegalStateException("비밀번호가 틀립니다.");
             }

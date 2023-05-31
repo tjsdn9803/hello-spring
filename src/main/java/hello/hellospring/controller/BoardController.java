@@ -39,4 +39,12 @@ public class BoardController {
         return "board/boardList";
 
     }
+
+    @GetMapping("/board/view")
+    public String BoardView(Model model, Long id){
+        BoardEntity boardEntity = boardService.findBoardById(id).get();
+        System.out.println(boardEntity.getBoardContent());
+        model.addAttribute("board", boardEntity);
+        return "board/boardView";
+    }
 }

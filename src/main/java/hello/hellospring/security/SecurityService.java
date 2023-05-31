@@ -45,7 +45,7 @@ public class SecurityService {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        Optional<Member> optionalMember = memberRepository.findByEmail(claims.getSubject());
+        Optional<Object> optionalMember = memberRepository.findByEmail(claims.getSubject());
         return optionalMember.isPresent();
     }
 
