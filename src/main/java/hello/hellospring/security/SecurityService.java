@@ -56,4 +56,13 @@ public class SecurityService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    public String getSubject(String token){
+        Claims claims =  Jwts.parserBuilder()
+                .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
+    }
 }

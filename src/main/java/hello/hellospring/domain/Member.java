@@ -5,7 +5,7 @@ import javax.persistence.*;
 @Entity
 public class Member {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
 
     @Column
@@ -14,7 +14,7 @@ public class Member {
     @Column(unique = true)
     private String email;
 
-    @Column @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column
     private Long index;
 
     @Column

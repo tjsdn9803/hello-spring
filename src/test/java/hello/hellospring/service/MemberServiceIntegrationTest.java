@@ -3,6 +3,7 @@ package hello.hellospring.service;
 import hello.hellospring.controller.MemberForm;
 import hello.hellospring.domain.Member;
 import hello.hellospring.repository.MemberRepository;
+import hello.hellospring.security.SecurityService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,9 @@ public class MemberServiceIntegrationTest {
     MemberService memberService;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    SecurityService securityService;
+
     @Test
     public void 회원가입() throws Exception {
         //Given
@@ -77,9 +81,9 @@ public class MemberServiceIntegrationTest {
         loginMemberForm.setEmail("testEmail@naver.com");
         loginMemberForm.setPassword("testPassword");
         //When
-        Boolean b = memberService.login(loginMemberForm);
+        MemberForm memberForm1 = memberService.login(loginMemberForm);
         //Then
-        assertThat(b).isEqualTo(true);
+        assertEquals(memberForm.getEmail(), securityService.getSubject(memberForm1.getJwt()));
     }
 
     @Test
@@ -95,9 +99,10 @@ public class MemberServiceIntegrationTest {
         loginMemberForm.setEmail("NotExistEmail@naver.com");
         loginMemberForm.setPassword("testPassword");
         //When
-        Boolean b = memberService.login(loginMemberForm);
+        IllegalStateException e1 = assertThrows(IllegalStateException.class,
+                () -> memberService.login(loginMemberForm));//로그인시 이메일이 존재하지 않음 오류
         //Then
-        assertThat(b).isEqualTo(false);
+        assertThat(e1.getMessage()).isEqualTo("이메일이 존재 하지 않습니다.");
     }
 
     @Test
@@ -113,26 +118,10 @@ public class MemberServiceIntegrationTest {
         loginMemberForm.setEmail("testEmail@naver.com");
         loginMemberForm.setPassword("noMatchPassword");
         //When
-        Boolean b = memberService.login(loginMemberForm);
+        IllegalStateException e1 = assertThrows(IllegalStateException.class,
+                () -> memberService.login(loginMemberForm));//로그인시 이메일이 존재하지 않음 오류
         //Then
-        assertThat(b).isEqualTo(false);
+        assertThat(e1.getMessage()).isEqualTo("비밀번호가 틀립니다.");
     }
 
-    @Test
-    public void login() throws Exception{
-        //Given
-        MemberForm memberForm = new MemberForm();
-        memberForm.setName("testName");
-        memberForm.setEmail("testEmail@naver.com");
-        memberForm.setPassword("testPassword");
-        memberForm.setNickname("testNickname");
-        Long saveId = memberService.join(memberForm);
-        MemberForm loginMemberForm = new MemberForm();
-        loginMemberForm.setEmail("testEmail@naver.com");
-        loginMemberForm.setPassword("testPassword");
-        //When
-        Boolean b = memberService.login(loginMemberForm);
-        //Then
-        assertThat(b).isEqualTo(true);
-    }
 }
